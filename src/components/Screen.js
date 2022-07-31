@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Pixel from "./Pixel";
-import React, { useState, useRef, useEffect, forwardRef } from "react";
+import React, {useRef, useEffect, forwardRef } from "react";
 
 
 function setFrame(frame, screen_id){
@@ -15,7 +15,6 @@ function setFrame(frame, screen_id){
       ))
   ))
 }
-
 
 const create_screen = (n,m, vp_percent, frame,id)=>{
     let AA = Array.from(Array(n).keys())
@@ -38,38 +37,14 @@ grid-template-rows: repeat(${(props)=>props.row}, 1fr);
 grid-column-gap: 0;
 grid-row-gap: 0;
 `;
-let isPlay = false;
-
 const calcPixelSize = (c, r, vp_percent)=>{return [(vp_percent)/c,(vp_percent)/r]}
 const Screen = forwardRef((props, ref) => {
-
-  const interval = useRef();
-  useEffect(() => {
+   const interval = useRef();
+   useEffect(() => {
     return () => clearInterval(interval.current);
 }, []);
 
-let I = 0
-
-// function onHover(){
-//   console.log("DDDDDDDDDHOVVVER")
-//   let frames = []
-//   if(data.hasOwnProperty("frames")){
-//     frames = data["frames"]
-//   }
-//   else{
-//     frames = prepareFrames(data)
-//   }
-//   // I = runLoop_(frames,id)
-//   setTimeout(()=>{
-//     clearInterval(I);
-
-//   },15000)
-// }
-
-// function offHover(){
-//   clearInterval(I);
-// }
-  const {vp_percent,id,DefaultFrame} = props
+const {vp_percent,id,DefaultFrame} = props
 
   useEffect(()=>{
     setFrame(DefaultFrame,id);
@@ -79,16 +54,12 @@ let I = 0
   const m=DefaultFrame[0].length
   ref.current =(frame)=> setFrame(frame,id);      
     return (
-      <div  >
+      <div>
 
-    <StyledScreen 
-            // onMouseEnter={() => onHover()}
-            // onMouseLeave={() => offHover()}
-            col={m} row={n} vp_percent={vp_percent} >
-{             create_screen(m,n,vp_percent, DefaultFrame, id)
-}      </StyledScreen>
+    <StyledScreen col={m} row={n} vp_percent={vp_percent}>
+        {create_screen(m,n,vp_percent, DefaultFrame, id)}
+    </StyledScreen>
 </div>
-
 )
 })
 

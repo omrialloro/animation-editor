@@ -20,46 +20,13 @@ import PlayBar from "./components/PlayBar";
 import  {reflectFrame,rotateFrame} from "./components/frameTransformations";
 
 
-
-
 let schemes_array = getSchemesArray()
-
-
-// todo: change range when picked v
-//      change monitor when dragged v
-//      duplicate v
-//      show animation name in toolbar v
-//      cash animation v
-//      reflect rotate reverse v
-//      change scheme v
-//      upload music v
-//      implementing forwardRef v
-//      render first frame each change
-//      make scroll change frames
-//     ----- fix setInterval -----v
-//      call server to extract gif
-//      improve slider response
-
-
-//  להתחיל עם הרבה אנימציות מההיבות ותוכנת עריכה. להוסיף סכימות
-//   יצירות אמנות איזולירבנד
 
   const StyledWindow= styled.div`
   width: 96px;
   height: 96px;
   margin-right: 4px;
   border: ${(props)=>props.border}px solid #000;
-`;
-
-const StyledMonitor= styled.div`
-width:480px
-height:480px
-
-
-border: 2px solid #000;
-margin: 24px;
-z-index: 7;
-
 `;
 
 
@@ -72,16 +39,8 @@ grid-template-rows: repeat(3, 1fr);
 grid-column-gap: 0;
 grid-row-gap: 0;
 margin: 14px;
-
 position: absolute;
 `;
-
-const StyledContainer= styled.div`
-height: 48px;
-width: 48px;
-position: relative;
-`;
-
 
 const StyledSmall= styled.div`
 height: 100px;
@@ -110,8 +69,6 @@ const inputRef2 = React.useRef();
 const inputRef3 = React.useRef();
 const inputRef4 = React.useRef();
 
-
-
 const handleChoose = (event) => {
   const { ref1, ref2 } = inputRef.current;
   ref1.current.click();
@@ -124,7 +81,6 @@ const handlePlay = (event) => {
   ref2.current.click();
 
 };
-
 
 
 function prepareFrames(data){
@@ -153,7 +109,6 @@ function prepareFrames(data){
 
   let r = data["range"]
   raw_frames = raw_frames.slice(r[0], r[1])
-
   return raw_frames
 }
 
@@ -258,7 +213,6 @@ function prepareFrames(data){
     let c = 30
     let r = 30
     let alpha = 1/num_frames
-
     const GrayFrame = (alpha)=>Array(r).fill(0).map(()=>(Array(c).fill(0).map(()=>{return grayRGB(alpha)})))
     return Array.from(Array(num_frames).keys()).map((t)=>(GrayFrame(alpha*t)))
   }
@@ -279,9 +233,6 @@ function prepareFrames(data){
     setRange(x["range"])
     setOperatorsBtns(x["operators"])
   }
-
-  // const delay = 30
-
   
   const [FPS,SetFPS] = useState(Math.round(24))
   const [delay,setDelay] = useState(Math.round(1000/FPS))
@@ -290,8 +241,6 @@ function prepareFrames(data){
   useEffect(()=>{
     setDelay(Math.round(1000/FPS))
   },[FPS])
-
-
 
   function FPSMinus(){
     if(FPS>1){
@@ -305,7 +254,6 @@ function prepareFrames(data){
   }
 
   const [OutScreen, setOutScreen] = useState(mainScreen)
-
   const [len_sec,setLen_sec] = useState(50*(delay/1000))
 
 
@@ -314,7 +262,6 @@ function prepareFrames(data){
     {"id": "7","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}}]);
 
   const [selectedId, setSelectedId] = useState(null)
-
 
   function prepareOutScreenData(data){
     let outFrames = []
@@ -353,9 +300,7 @@ function prepareFrames(data){
     delete animations_.id
     setAnimations(animations_)
   }
-  function handleOnDragStart(){
-    // setScreenSize(12.5)
-  }
+
   function clickRotate(){
     let mainScreen_ = mainScreen
     console.log(mainScreen_["operators"]["rotate"])
@@ -473,17 +418,15 @@ function toggleOutScreenPlay(){
 
 function updateFrameIndex(index){
   setFrameIndex(index)
-  
   setOutScreenFrame(OutScreen["frames"][index])
-
 }
-const [outScreenFrame, setOutScreenFrame] = useState(frammmes[0])
 
+const [outScreenFrame, setOutScreenFrame] = useState(frammmes[0])
 
 return (
 <body>
 
-<DragDropContext  onDragStart={handleOnDragStart} onDragEnd={handleOnDragEnd}>
+<DragDropContext  onDragEnd={handleOnDragEnd}>
 <Droppable droppableId="droppable" direction="horizontal">
     {(provided) => {return (
 
@@ -492,7 +435,6 @@ return (
     <div className="inner_container_left">
     <div className="container_monitor">
     <div className="monitor">
-                            {/* <StyledContainer className="monitor"> */}
                             <StyledBox >
                             {[...Array(9).keys()].map((k,index)=>( <Draggable key={'monitor'+k+100000} draggableId={'f'+k} index={-index-1}>
                     {(provided,snapshot)=>(
@@ -508,11 +450,8 @@ return (
               {provided.placeholder}
 
                             </StyledBox>
-                            {/* <StyledMonitor> */}
                                 <Screen ref = {inputRef2}
                               id = "tt"  vp_percent = {31}  DefaultFrame ={frammmes[0]}/>
-                            {/* </StyledMonitor> */}
-                            {/* </StyledContainer> */}
 
         {/* {provided.placeholder} */}
         </div>
