@@ -62,24 +62,20 @@ function resetSelect(){
 
 const ref1 = useRef();
 const ref2 = useRef();
-const inputRef = React.useRef({ref1,ref2});
-
-const inputRef1 = React.useRef();
-const inputRef2 = React.useRef();
-const inputRef3 = React.useRef();
-const inputRef4 = React.useRef();
+const AudioRef = React.useRef({ref1,ref2});
+const OutScreenRef = React.useRef();
+const MonitorRef = React.useRef();
+const SmallScreenRef = React.useRef();
+const PlayBarRef = React.useRef();
 
 const handleChoose = (event) => {
-  const { ref1, ref2 } = inputRef.current;
+  const { ref1, ref2 } = AudioRef.current;
   ref1.current.click();
 };
 
 const handlePlay = (event) => {
-  const { ref1, ref2 } = inputRef.current;
-  // ref2.current.click();
-  // inputRef1.current.click();
+  const { ref1, ref2 } = AudioRef.current;
   ref2.current.click();
-
 };
 
 
@@ -383,9 +379,7 @@ UseInterval(() => {
   if (i>=frammmes.length-1){
     i=0
   }
-  inputRef2.current(frammmes[i])
-  // inputRef4.current(i)
-
+  MonitorRef.current(frammmes[i])
 }, isRunning?delay:null);
 
 function toggleMonitorPlay(){
@@ -403,8 +397,8 @@ UseInterval(() => {
   if (ii>=OutScreen["frames"].length-1){
     ii=0
   }
-  inputRef1.current(OutScreen["frames"][ii])
-  inputRef4.current(ii)
+  OutScreenRef.current(OutScreen["frames"][ii])
+  PlayBarRef.current(ii)
 
 }, isRunningOutScreen?delay:null);
 
@@ -450,7 +444,7 @@ return (
               {provided.placeholder}
 
                             </StyledBox>
-                                <Screen ref = {inputRef2}
+                                <Screen ref = {MonitorRef}
                               id = "tt"  vp_percent = {31}  DefaultFrame ={frammmes[0]}/>
 
         {/* {provided.placeholder} */}
@@ -490,7 +484,7 @@ return (
  </div>
  </div>
 
- <AudioInput ref = {inputRef} start_sec={offset} stop_sec={offset+len_sec}></AudioInput>
+ <AudioInput ref = {AudioRef} start_sec={offset} stop_sec={offset+len_sec}></AudioInput>
 
       <div className="add_music" onClick={handleChoose}>
             <p>add music</p>
@@ -520,7 +514,7 @@ return (
                     {(provided)=>(
                             <div className="position2" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
                             <StyledWindow border={k["id"]==selectedId?10:2} onClick={()=>{setWindow(k["id"])}}>
-                             <Screen ref = {inputRef3}  id = {"tt"+k["id"]}  vp_percent = {9} DefaultFrame = {prepareFrames(k)[0]}/>
+                             <Screen ref = {SmallScreenRef}  id = {"tt"+k["id"]}  vp_percent = {9} DefaultFrame = {prepareFrames(k)[0]}/>
                             </StyledWindow>
                             <p onClick={()=>{deletAnimation(k["id"])}}>xx</p>
                             <p onClick={()=>{duplicateAnimation(k["id"])}}>+</p>
@@ -535,8 +529,8 @@ return (
               </ScrollMenu>
 
               <div className="screen">
-              <Screen ref = {inputRef1} id = {"tdfffff"} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
-              <PlayBar ref = {inputRef4} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
+              <Screen ref = {OutScreenRef} id = {"tdfffff"} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
+              <PlayBar ref = {PlayBarRef} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
               <div className="download" onClick={toggleOutScreenPlay}>
                 
             <p>play</p>

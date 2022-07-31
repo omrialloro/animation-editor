@@ -27,27 +27,9 @@ export default  React.forwardRef((props,ref) =>{
 
   const { ref1, ref2 } = ref.current;
 
-  // React.useEffect(()=>{
-  //   async function  sendAudio(){
-  //     let dd = await   fetch(port + '/mp3', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'audio/mpeg',
-  //       },
-  //       body: fff,
-  //     })
-  //   }
-  //   sendAudio()
-  // },[fff])
-
-
-
-
-  let  I= 0
+  // let  I= 0
   function TogglePlay(){
     let Audio = document.querySelector(".AudioInput_audio");
-    console.log(Audio.buffered)
-
 
       if(!isPlay){
         Audio.play()
@@ -71,7 +53,6 @@ export default  React.forwardRef((props,ref) =>{
       />
       {!source && <button  hidden={true}></button>}
       {source && (
-          
         <audio 
           className="AudioInput_audio"
           controls
