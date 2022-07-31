@@ -1,11 +1,6 @@
 import styled from "styled-components";
 import Pixel from "./Pixel";
-
-import UseInterval from "./UseInterval";
 import React, { useState, useRef, useEffect, forwardRef } from "react";
-import Slider from '@mui/material/Slider';
-
-
 
 
 function setFrame(frame, screen_id){
@@ -23,7 +18,6 @@ function setFrame(frame, screen_id){
 
 
 const create_screen = (n,m, vp_percent, frame,id)=>{
-
     let AA = Array.from(Array(n).keys())
     let BB = Array.from(Array(m).keys())
     let res = calcPixelSize(n,m, vp_percent)
@@ -33,7 +27,6 @@ const create_screen = (n,m, vp_percent, frame,id)=>{
         ))
     ))
 }
-
 
 const StyledScreen= styled.div`
 height: ${(props)=>props.vp_percent}%;
@@ -50,8 +43,6 @@ let isPlay = false;
 const calcPixelSize = (c, r, vp_percent)=>{return [(vp_percent)/c,(vp_percent)/r]}
 const Screen = forwardRef((props, ref) => {
 
-
-
   const interval = useRef();
   useEffect(() => {
     return () => clearInterval(interval.current);
@@ -59,107 +50,43 @@ const Screen = forwardRef((props, ref) => {
 
 let I = 0
 
-function onHover(){
-  console.log("DDDDDDDDDHOVVVER")
-  let frames = []
-  if(data.hasOwnProperty("frames")){
-    frames = data["frames"]
-  }
-  else{
-    frames = prepareFrames(data)
-  }
-  // I = runLoop_(frames,id)
-  setTimeout(()=>{
-    clearInterval(I);
+// function onHover(){
+//   console.log("DDDDDDDDDHOVVVER")
+//   let frames = []
+//   if(data.hasOwnProperty("frames")){
+//     frames = data["frames"]
+//   }
+//   else{
+//     frames = prepareFrames(data)
+//   }
+//   // I = runLoop_(frames,id)
+//   setTimeout(()=>{
+//     clearInterval(I);
 
-  },15000)
-}
+//   },15000)
+// }
 
-function offHover(){
-  clearInterval(I);
-}
-const [isRunning, setIsRunning] = useState(false);
-
-  const {slider, vp_percent,data,prepareFrames, id,delay,DefaultFrame} = props
-  const [delay_, setDelay] = useState(delay);
+// function offHover(){
+//   clearInterval(I);
+// }
+  const {vp_percent,id,DefaultFrame} = props
 
   useEffect(()=>{
     setFrame(DefaultFrame,id);
   },[DefaultFrame])
 
-
-function PlayLoop(isRunning,delay){
-  let frames = []
-  if(data.hasOwnProperty("frames")){
-    frames = data["frames"]
-  }
-  else{
-    frames = prepareFrames(data)
-  }
-
-  let l = frames.length
-  let i=0
-  UseInterval(() => {
-    i+=1;
-    if (i>=l-1){
-      i=0
-    }
-    setFrame(frames[i], id);
-  }, isRunning?delay:null);
-
-}
-function handlePlay(){
-  console.log(isRunning)
-  setIsRunning(!isRunning)
-}
-
-      let frames = []
-      if(data.hasOwnProperty("frames")){
-        frames = data["frames"]
-      }
-      else{
-        frames = prepareFrames(data)
-      }
-      PlayLoop(isRunning,delay_)
-
-      const frame=frames[0]
-      const n=data["dim"][0]
-      const m=data["dim"][1]
-      // const { ref1, ref2 } = ref.current;
-      ref.current =(frame)=> setFrame(frame,id);      
-
+  const n=DefaultFrame.length
+  const m=DefaultFrame[0].length
+  ref.current =(frame)=> setFrame(frame,id);      
     return (
       <div  >
-      {/* <button  ref = {ref} onClick={handlePlay} hidden = {true}></button> */}
 
     <StyledScreen 
             // onMouseEnter={() => onHover()}
             // onMouseLeave={() => offHover()}
             col={m} row={n} vp_percent={vp_percent} >
-{             create_screen(m,n,vp_percent, frame, id)
+{             create_screen(m,n,vp_percent, DefaultFrame, id)
 }      </StyledScreen>
-{slider&&< Slider
-           getAriaLabel={() => "Route Difficulty"}
-           value={0}
-           valueLabelDisplay="auto"
-           min={0}
-           max={50}
-           onChange={()=>{console.log("change")}}
-          //  onChangeCommitted = {onChangeCommitted}
-           sx={{
-            width: 530,
-            color: 'yellow',
-            WebkitAppearance: 'slider-vertical',
-
-            '& .MuiSlider-thumb': {
-              width: "8px",
-              height: '24px',
-              borderRadius: '0%',
-              background: '#F72C2C',
-            },
-          }}>
-        </Slider>}
-
 </div>
 
 )

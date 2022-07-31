@@ -510,7 +510,7 @@ return (
                             </StyledBox>
                             {/* <StyledMonitor> */}
                                 <Screen ref = {inputRef2}
-                              id = "tt" data = {mainScreen} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {31} delay = {32} DefaultFrame ={frammmes[0]}/>
+                              id = "tt"  vp_percent = {31}  DefaultFrame ={frammmes[0]}/>
                             {/* </StyledMonitor> */}
                             {/* </StyledContainer> */}
 
@@ -581,7 +581,7 @@ return (
                     {(provided)=>(
                             <div className="position2" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
                             <StyledWindow border={k["id"]==selectedId?10:2} onClick={()=>{setWindow(k["id"])}}>
-                             <Screen ref = {inputRef3}  id = {"tt"+k["id"]} data = {k} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {9} delay = {30} DefaultFrame = {prepareFrames(k)[0]}/>
+                             <Screen ref = {inputRef3}  id = {"tt"+k["id"]}  vp_percent = {9} DefaultFrame = {prepareFrames(k)[0]}/>
                             </StyledWindow>
                             <p onClick={()=>{deletAnimation(k["id"])}}>xx</p>
                             <p onClick={()=>{duplicateAnimation(k["id"])}}>+</p>
@@ -596,7 +596,7 @@ return (
               </ScrollMenu>
 
               <div className="screen">
-              <Screen ref = {inputRef1} id = {"tdfffff"} data = {OutScreen} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
+              <Screen ref = {inputRef1} id = {"tdfffff"} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
               <PlayBar ref = {inputRef4} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
               <div className="download" onClick={toggleOutScreenPlay}>
                 
