@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect,useRef } from "react";
 import "./components/App.css";
 import { ScrollMenu } from 'react-horizontal-scrolling-menu';
@@ -11,9 +10,6 @@ import {nestedCopy} from "./components/Utils";
 import {changeFrameScheme, getSchemesArray} from "./components/ColorSchemes";
 import {grayRGB} from "./components/RGB";
 import AudioInput from "./components/AudioInput";
-import UseInterval from "./components/UseInterval";
-import PlayBar from "./components/PlayBar";
-// import Waveform from "./components/Waveform";
 
 
 
@@ -23,27 +19,6 @@ import  {reflectFrame,rotateFrame} from "./components/frameTransformations";
 
 
 let schemes_array = getSchemesArray()
-
-
-// todo: change range when picked v
-//      change monitor when dragged v
-//      duplicate v
-//      show animation name in toolbar v
-//      cash animation v
-//      reflect rotate reverse v
-//      change scheme v
-//      upload music v
-//      implementing forwardRef v
-//      render first frame each change
-//      make scroll change frames
-//     ----- fix setInterval -----v
-//      call server to extract gif
-//      improve slider response
-
-
-//  להתחיל עם הרבה אנימציות מההיבות ותוכנת עריכה. להוסיף סכימות
-//   יצירות אמנות איזולירבנד
-
   const StyledWindow= styled.div`
   width: 96px;
   height: 96px;
@@ -52,14 +27,11 @@ let schemes_array = getSchemesArray()
 `;
 
 const StyledMonitor= styled.div`
-width:480px
-height:480px
-
-
+width:336px
+height:336px
 border: 2px solid #000;
 margin: 24px;
 z-index: 7;
-
 `;
 
 
@@ -67,8 +39,8 @@ const StyledBox= styled.div`
 height: 10px;
 width: 10px;
 display: grid;
-grid-template-columns: repeat(3, 1fr);
-grid-template-rows: repeat(3, 1fr);
+grid-template-columns: repeat(4, 1fr);
+grid-template-rows: repeat(4, 1fr);
 grid-column-gap: 0;
 grid-row-gap: 0;
 margin: 14px;
@@ -77,18 +49,18 @@ position: absolute;
 `;
 
 const StyledContainer= styled.div`
-height: 48px;
-width: 48px;
+height: 480px;
+width: 480px;
 position: relative;
 `;
 
 
 const StyledSmall= styled.div`
-height: 100px;
-width: 100px;
+height: 96px;
+width: 96px;
 border: 1px solid #000;
 background:blue;
-opacity:${(props)=>props.isDragging?'0.80':'0'};
+opacity:${(props)=>props.isDragging?'0.80':'0.0'};
 z-index: 3;
 
 `
@@ -108,8 +80,6 @@ const inputRef = React.useRef({ref1,ref2});
 const inputRef1 = React.useRef();
 const inputRef2 = React.useRef();
 const inputRef3 = React.useRef();
-const inputRef4 = React.useRef();
-
 
 
 const handleChoose = (event) => {
@@ -119,9 +89,8 @@ const handleChoose = (event) => {
 
 const handlePlay = (event) => {
   const { ref1, ref2 } = inputRef.current;
-  // ref2.current.click();
-  // inputRef1.current.click();
   ref2.current.click();
+  inputRef1.current.click();
 
 };
 
@@ -139,8 +108,7 @@ function prepareFrames(data){
     raw_frames.reverse()
   }
   if(operators["rotate"]>0){
-    console.log("rotate")
-
+    console.log("rotattttte")
     for(let i=0;i<operators["rotate"];i++){
       raw_frames = raw_frames.map((x)=>(rotateFrame(x)))
     }
@@ -153,7 +121,7 @@ function prepareFrames(data){
 
   let r = data["range"]
   raw_frames = raw_frames.slice(r[0], r[1])
-
+  
   return raw_frames
 }
 
@@ -176,8 +144,8 @@ function prepareFrames(data){
             items.splice(result.destination.index+1, 0, info);
             setDATA(items);
           }
-
-
+        
+            
         }
         else{
           console.log(result.destination.index)
@@ -227,7 +195,7 @@ function prepareFrames(data){
     }
     loadFilenames()
   },[])
-
+  
   function CreateGrayFramesData(r,c,num_frames,id){
 
     return {
@@ -235,14 +203,15 @@ function prepareFrames(data){
       "dim":[r,c],
       "range":[0,num_frames],
       "filename":"gray",
-      "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}
+      "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}    
     }
   }
 
   let num_frames = 50
   function updateRange(range)  {
+
     let mainScreen_ = mainScreen
-    mainScreen_["range"] = range
+    mainScreen_["range"] = range    
     setMainScreen(mainScreen_)
   }
 
@@ -273,36 +242,14 @@ function prepareFrames(data){
       let tt = items.map((el)=>(el["id"]!=x["id"]?el:x))
       setDATA(items.map((el)=>(el["id"]!=x["id"]?el:x)))
       let frames = animations[x["filename"]]
-
+    
     setMainScreen_(x)
     setScreenRange({"min":0,"max":frames.length,"range":x["range"]})
     setRange(x["range"])
     setOperatorsBtns(x["operators"])
   }
 
-  // const delay = 30
-
-  
-  const [FPS,SetFPS] = useState(Math.round(24))
-  const [delay,setDelay] = useState(Math.round(1000/FPS))
-
-  
-  useEffect(()=>{
-    setDelay(Math.round(1000/FPS))
-  },[FPS])
-
-
-
-  function FPSMinus(){
-    if(FPS>1){
-      SetFPS(FPS-1)   
-    }
-  }
-  function FPSPlus(){
-    if(FPS<60){
-      SetFPS(FPS+1)   
-    }
-  }
+  const delay = 30
 
   const [OutScreen, setOutScreen] = useState(mainScreen)
 
@@ -312,6 +259,8 @@ function prepareFrames(data){
   const [DATA, setDATA]=useState([
     {"id":"0","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}},
     {"id": "7","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}}]);
+
+  // const range = [0,50]
 
   const [selectedId, setSelectedId] = useState(null)
 
@@ -331,8 +280,6 @@ function prepareFrames(data){
     "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}
   }
     )
-    setOutScreenFrame(outFrames[0])
-    setMaxFrameIndex(outFrames.length)
   }
 
   const [name, setName] = useState("monitor")
@@ -357,6 +304,7 @@ function prepareFrames(data){
     // setScreenSize(12.5)
   }
   function clickRotate(){
+    console.log("rotate")
     let mainScreen_ = mainScreen
     console.log(mainScreen_["operators"]["rotate"])
     mainScreen_["operators"]["rotate"] = (mainScreen_["operators"]["rotate"]+1)%4
@@ -367,10 +315,10 @@ function prepareFrames(data){
   function clickReverse(){
     let mainScreen_ = mainScreen
     console.log(mainScreen_["operators"]["reverse"])
-    mainScreen_["operators"]["reverse"] = (mainScreen_["operators"]["reverse"]+1)%2
+    mainScreen_["operators"]["reverse"] = (mainScreen_["operators"]["reverse"]+1)%2    
     console.log(mainScreen_["operators"]["reverse"])
     setMainScreen(mainScreen_)
-
+    
   }
 
   function clickReflect(){
@@ -379,7 +327,7 @@ function prepareFrames(data){
     mainScreen_["operators"]["reflect"] = (mainScreen_["operators"]["reflect"]+1)%2
     console.log(mainScreen_["operators"]["reflect"])
     setMainScreen(mainScreen_)
-
+    
   }
 
   function clickScheme(){
@@ -417,214 +365,210 @@ function prepareFrames(data){
       "range":[0,animations[filename].length],
       // "frames":animations[filename].map((x)=>(rotateFrame(x))),
       "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}
-    })
-
+    })  
+    
   },10)
   }
 
   useEffect(()=>{
     prepareOutScreenData()
-    console.log(OutScreen)
-
   },[mainScreen,DATA])
-let frammmes = prepareFrames(mainScreen)
-console.log(frammmes.length)
-
-let i = 0;
-
-const [isRunning, setIsRunning] = useState(false)
-UseInterval(() => {
-  i+=1;
-  if (i>=frammmes.length-1){
-    i=0
-  }
-  inputRef2.current(frammmes[i])
-  // inputRef4.current(i)
-
-}, isRunning?delay:null);
-
-function toggleMonitorPlay(){
-  setIsRunning(!isRunning)
-}
-
-const [isRunningOutScreen, setIsRunningOutScreen] = useState(false)
-
-const [FrameIndex, setFrameIndex] = useState(0)
-const [MaxFrameIndex, setMaxFrameIndex] = useState(10)
-let ii = FrameIndex;
-
-UseInterval(() => {
-  ii+=1;
-  if (ii>=OutScreen["frames"].length-1){
-    ii=0
-  }
-  inputRef1.current(OutScreen["frames"][ii])
-  inputRef4.current(ii)
-
-}, isRunningOutScreen?delay:null);
-
-function toggleOutScreenPlay(){
-  setIsRunningOutScreen(!isRunningOutScreen)
-  handlePlay()
-}
-
-
-
-
-function updateFrameIndex(index){
-  setFrameIndex(index)
-  
-  setOutScreenFrame(OutScreen["frames"][index])
-
-}
-const [outScreenFrame, setOutScreenFrame] = useState(frammmes[0])
-
 
 return (
-<body>
-
-<DragDropContext  onDragStart={handleOnDragStart} onDragEnd={handleOnDragEnd}>
-<Droppable droppableId="droppable" direction="horizontal">
-    {(provided) => {return (
-
-<main {...provided.droppableProps} ref={provided.innerRef}>
-  <div className="container_left">
-    <div className="inner_container_left">
-    <div className="container_monitor">
-    <div className="monitor">
-                            {/* <StyledContainer className="monitor"> */}
-                            <StyledBox >
-                            {[...Array(9).keys()].map((k,index)=>( <Draggable key={'monitor'+k+100000} draggableId={'f'+k} index={-index-1}>
-                    {(provided,snapshot)=>(
-                               <StyledSmall
-                                isDragging = {snapshot.isDragging}
-                                {...provided.dragHandleProps}
-                                {...provided.draggableProps}
-                                ref={provided.innerRef}
-                                />
-                    )}
-
-                </Draggable>))}
-              {provided.placeholder}
-
-                            </StyledBox>
-                            {/* <StyledMonitor> */}
-                                <Screen ref = {inputRef2}
-                              id = "tt" data = {mainScreen} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {31} delay = {32} DefaultFrame ={frammmes[0]}/>
-                            {/* </StyledMonitor> */}
-                            {/* </StyledContainer> */}
-
-        {/* {provided.placeholder} */}
-        </div>
-        <div className="slide_monitor">
-        <SliderComp min={ScreenRange["min"]} max = {ScreenRange["max"]} range = {range} updateRange  = {updateRange} width = {340}/>
-        </div>
-        </div>
-        <div className="container_btns">    
-    <div className="container_btn invert" onClick={clickReverse}>
-      <div className="btn">
-      <img src="reverse_icon.svg"></img>
-      </div>
-        <p>mirror</p>
+  <body>
+  <header>
+    <div className="logo">
     </div>
-    <div className="container_btn reflect" onClick={clickReflect}>
-      <div className="btn">
-      <img src="reflect_icon.svg"></img>
-      </div>
-        <p>reverse</p>
+    <div className="menu_btn">
     </div>
-
-    <div className="container_btn flip_vert" onClick={clickRotate}>
-      <div className="btn">
-      <img src="switch_icon.svg"></img>
-
-      </div>
-        <p>rotate</p>
-    </div>
-    <div className="container_btn color_scheme" onClick={clickScheme}>
-      <div className="btn" >
-      <img src="reverse_icon.svg"></img>
-
-      </div>
-        <p>scheme</p>
-    </div>
- </div>
- </div>
-
- <AudioInput ref = {inputRef} start_sec={offset} stop_sec={offset+len_sec}></AudioInput>
-
-      <div className="add_music" onClick={handleChoose}>
-            <p>add music</p>
-      </div>
-      <div className="download" onClick={()=>console.log(setRange)}>
-            <p>download</p>
-      </div>
-      <div className="download" onClick={toggleMonitorPlay}>
-            <p>play</p>
-      </div>
-      <input value={offset} onChange={handleOffsetChange} />
-      <input value={duration} onChange={handleDurationChange} />
-      <div className="library" >
-        <form action="/action_page.php">
-              <select name="schemes" id="scheme"  onChange={handleSelectChange}>
-                {filenames.map((f)=>(<option>{f}</option>))}
-              </select>
-        </form>
-      </div>
-  </div>
-
-  <div className="container_right" >
-        <div>
-                <ScrollMenu>
-                <div className="order" >
-                    {DATA.map((k,index)=>( <Draggable key={k["id"]+1000} draggableId={k["id"]} index={index}>
-                    {(provided)=>(
-                            <div className="position2" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
-                            <StyledWindow border={k["id"]==selectedId?10:2} onClick={()=>{setWindow(k["id"])}}>
-                             <Screen ref = {inputRef3}  id = {"tt"+k["id"]} data = {k} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {9} delay = {30} DefaultFrame = {prepareFrames(k)[0]}/>
-                            </StyledWindow>
-                            <p onClick={()=>{deletAnimation(k["id"])}}>xx</p>
-                            <p onClick={()=>{duplicateAnimation(k["id"])}}>+</p>
-
-                        </div>
-                    )}
-
-                </Draggable>))}
-                {provided.placeholder}
-
-              </div>
-              </ScrollMenu>
-
-              <div className="screen">
-              <Screen ref = {inputRef1} id = {"tdfffff"} data = {OutScreen} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
-              <PlayBar ref = {inputRef4} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
-              <div className="download" onClick={toggleOutScreenPlay}>
-                
-            <p>play</p>
-            
-      </div>
-      <div className="speed">
-               <div className="minus" onClick={FPSMinus}>
-                 <img src="minus.svg"></img>
-               </div>
-                  <p>{FPS} fps</p>
-               <div className="plus"  onClick={FPSPlus}>
-                   <img src="plus.svg"></img>
-                </div>
-      </div>
-
+  </header>
+  
+  
+  
+  <main>
+    <div className="container_left">
+      <div className="inner_container_left">
+        <div className="container_monitor">
+          <div className="monitor">
+          </div>
+          <div className="slide_monitor">
+          </div>
+          <div className="btns_bottom_container">
+            <div className="browse_audio">
+                <p>browse library</p>
             </div>
+              <div className="play_stop">
+              </div>
+          </div>
+         
+    
         </div>
-  </div>
-</main>
+        <div className="container_btns">
+    
+          <div className="container_btn invert">
+            <div className="btn">
+            </div>
+              <p>mirror</p>
+          </div>
+    
+          <div className="container_btn reflect">
+            <div className="btn">
+            </div>
+              <p>reverse</p>
+          </div>
+    
+          <div className="container_btn flip_vert">
+            <div className="btn">
+            </div>
+              <p>rotate</p>
+          </div>
+    
+    
+    
+          <div className="container_btn color_scheme">
+            <div className="btn" >
+            </div>
+              <p>scheme</p>
+          </div>
+    
+       </div>
+      </div>
+      <div className="library">
+        <div className="container_library">
+          <div className="arrow"></div>
+            <div className="frame_library_container">
+              <div className="frame_library frame1"></div>
+              <div className="file_title"><p>3.gif</p></div>
+            </div>
+  
+            <div className="frame_library_container">
+              <div className="frame_library frame2"></div>
+              <div className="file_title"><p>3.gif</p></div>
+            </div>
+  
+            <div className="frame_library_container">
+              <div className="frame_library frame3"></div>
+              <div className="file_title"><p>7.gif</p></div>
+            </div>
+  
+            <div className="frame_library_container">
+              <div className="frame_library frame4"></div>
+              <div className="file_title"><p>9.gif</p></div>
+            </div>
+            <div className="arrow"></div>
+  
+        </div>
+  
+        <div className="close_library">
+          <p>close</p>
+        </div>
+      </div>
+  
+    </div>
+    <div className="container_right">
+      <div className="container_timeline">
+        <div className="arrow_timeline"></div>
+  
+        <div className="frame_timeline_container">
+          <div className="frame_container_inner">
+            <div className="move_icon"></div>
+            <div className="frame_timeline">
+  
+            </div>
+            <div className="duplicate_icon">
+            </div>
+          </div>
+          <div className="close_icon"></div>
+        </div>
+  
+        <div className="frame_timeline_container">
+          <div className="frame_container_inner">
+            <div className="move_icon"></div>
+            <div className="frame_timeline">
+            </div>
+            <div className="duplicate_icon"></div>
+          </div>
+          <div className="close_icon"></div>
+        </div>
+  
+        <div className="frame_timeline_container">
+          <div className="frame_container_inner">
+            <div className="move_icon"></div>
+            <div className="frame_timeline">
+            </div>
+  
+            <div className="duplicate_icon"></div>
+          </div>
+          <div className="close_icon"></div>
+        </div>
+  
+        <div className="frame_timeline_container ">
+          <div className="frame_container_inner">
+            <div className="move_icon"></div>
+            <div className="frame_timeline ">
+            </div>
+  
+            <div className="duplicate_icon"></div>
+          </div>
+          <div className="close_icon"></div>
+        </div>
+  
+        <div className="frame_timeline_container empty">
+          <div className="frame_container_inner">
+            <div className="move_icon"></div>
+            <div className="frame_timeline">
+            </div>
+  
+          </div>
+          <div className="close_icon"></div>
+        </div>
+  
+        <div className="arrow_timeline"></div>
+      </div>
+      <div className="screen">
+      </div>
+  
+      <div className="screen_bottom_container">
+          <div className="play_stop">
+          </div>
+          <div className="speed">
+            <div className="minus">
+            </div>
+            <p>12 fps</p>
+            <div className="plus">
+            </div>
+  
+          </div>
+          <div className="screen_slider">
+          </div>
+          </div>
+          <div className="audio">
+            <div className="browse_audio">
+                <p>browse audio</p>
+            </div>
+  
+            <div className="mute">
+            </div>
+            <div className="waveform">
+            </div>
+            <div className="close_audio">
+            </div>
+          </div>
+          <div className="buttons_bar">
+            <div className="audition_btn">
+              <p>audition</p>
+            </div>
+            <div className="download_btn">
+              <p>download</p>
+            </div>
+          </div>
+    </div>
+  </main>
+  
 
-)}}
-</Droppable>
-
-</DragDropContext>
-
-
-</body>
+  
+  </body>
+  
   );
 }
 

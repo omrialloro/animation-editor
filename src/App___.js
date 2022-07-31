@@ -12,9 +12,6 @@ import {changeFrameScheme, getSchemesArray} from "./components/ColorSchemes";
 import {grayRGB} from "./components/RGB";
 import AudioInput from "./components/AudioInput";
 import UseInterval from "./components/UseInterval";
-import PlayBar from "./components/PlayBar";
-// import Waveform from "./components/Waveform";
-
 
 
 import  {reflectFrame,rotateFrame} from "./components/frameTransformations";
@@ -108,8 +105,6 @@ const inputRef = React.useRef({ref1,ref2});
 const inputRef1 = React.useRef();
 const inputRef2 = React.useRef();
 const inputRef3 = React.useRef();
-const inputRef4 = React.useRef();
-
 
 
 const handleChoose = (event) => {
@@ -119,10 +114,8 @@ const handleChoose = (event) => {
 
 const handlePlay = (event) => {
   const { ref1, ref2 } = inputRef.current;
-  // ref2.current.click();
-  // inputRef1.current.click();
   ref2.current.click();
-
+  inputRef1.current.click();
 };
 
 
@@ -241,6 +234,8 @@ function prepareFrames(data){
 
   let num_frames = 50
   function updateRange(range)  {
+    console.log("updateRange")
+
     let mainScreen_ = mainScreen
     mainScreen_["range"] = range
     setMainScreen(mainScreen_)
@@ -280,29 +275,7 @@ function prepareFrames(data){
     setOperatorsBtns(x["operators"])
   }
 
-  // const delay = 30
-
-  
-  const [FPS,SetFPS] = useState(Math.round(24))
-  const [delay,setDelay] = useState(Math.round(1000/FPS))
-
-  
-  useEffect(()=>{
-    setDelay(Math.round(1000/FPS))
-  },[FPS])
-
-
-
-  function FPSMinus(){
-    if(FPS>1){
-      SetFPS(FPS-1)   
-    }
-  }
-  function FPSPlus(){
-    if(FPS<60){
-      SetFPS(FPS+1)   
-    }
-  }
+  const delay = 30
 
   const [OutScreen, setOutScreen] = useState(mainScreen)
 
@@ -312,6 +285,8 @@ function prepareFrames(data){
   const [DATA, setDATA]=useState([
     {"id":"0","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}},
     {"id": "7","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}}]);
+
+  // const range = [0,50]
 
   const [selectedId, setSelectedId] = useState(null)
 
@@ -331,8 +306,6 @@ function prepareFrames(data){
     "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}
   }
     )
-    setOutScreenFrame(outFrames[0])
-    setMaxFrameIndex(outFrames.length)
   }
 
   const [name, setName] = useState("monitor")
@@ -428,56 +401,24 @@ function prepareFrames(data){
 
   },[mainScreen,DATA])
 let frammmes = prepareFrames(mainScreen)
-console.log(frammmes.length)
 
 let i = 0;
-
 const [isRunning, setIsRunning] = useState(false)
+
 UseInterval(() => {
   i+=1;
   if (i>=frammmes.length-1){
     i=0
   }
   inputRef2.current(frammmes[i])
-  // inputRef4.current(i)
+  inputRef1.current(frammmes[i])
+  inputRef3.current(frammmes[i])
 
 }, isRunning?delay:null);
 
-function toggleMonitorPlay(){
+function togglePlay(){
   setIsRunning(!isRunning)
 }
-
-const [isRunningOutScreen, setIsRunningOutScreen] = useState(false)
-
-const [FrameIndex, setFrameIndex] = useState(0)
-const [MaxFrameIndex, setMaxFrameIndex] = useState(10)
-let ii = FrameIndex;
-
-UseInterval(() => {
-  ii+=1;
-  if (ii>=OutScreen["frames"].length-1){
-    ii=0
-  }
-  inputRef1.current(OutScreen["frames"][ii])
-  inputRef4.current(ii)
-
-}, isRunningOutScreen?delay:null);
-
-function toggleOutScreenPlay(){
-  setIsRunningOutScreen(!isRunningOutScreen)
-  handlePlay()
-}
-
-
-
-
-function updateFrameIndex(index){
-  setFrameIndex(index)
-  
-  setOutScreenFrame(OutScreen["frames"][index])
-
-}
-const [outScreenFrame, setOutScreenFrame] = useState(frammmes[0])
 
 
 return (
@@ -521,7 +462,7 @@ return (
         </div>
         </div>
         <div className="container_btns">    
-    <div className="container_btn invert" onClick={clickReverse}>
+    <div className="container_btn invert">
       <div className="btn">
       <img src="reverse_icon.svg"></img>
       </div>
@@ -534,7 +475,7 @@ return (
         <p>reverse</p>
     </div>
 
-    <div className="container_btn flip_vert" onClick={clickRotate}>
+    <div className="container_btn flip_vert">
       <div className="btn">
       <img src="switch_icon.svg"></img>
 
@@ -559,7 +500,7 @@ return (
       <div className="download" onClick={()=>console.log(setRange)}>
             <p>download</p>
       </div>
-      <div className="download" onClick={toggleMonitorPlay}>
+      <div className="download" onClick={togglePlay}>
             <p>play</p>
       </div>
       <input value={offset} onChange={handleOffsetChange} />
@@ -571,6 +512,10 @@ return (
               </select>
         </form>
       </div>
+
+
+
+
   </div>
 
   <div className="container_right" >
@@ -581,7 +526,7 @@ return (
                     {(provided)=>(
                             <div className="position2" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
                             <StyledWindow border={k["id"]==selectedId?10:2} onClick={()=>{setWindow(k["id"])}}>
-                             <Screen ref = {inputRef3}  id = {"tt"+k["id"]} data = {k} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {9} delay = {30} DefaultFrame = {prepareFrames(k)[0]}/>
+                             <Screen ref = {inputRef3}  id = {"tt"+k["id"]} data = {k} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {9} delay = {30} DefaultFrame = {prepareFrames(k)[1]}/>
                             </StyledWindow>
                             <p onClick={()=>{deletAnimation(k["id"])}}>xx</p>
                             <p onClick={()=>{duplicateAnimation(k["id"])}}>+</p>
@@ -596,22 +541,7 @@ return (
               </ScrollMenu>
 
               <div className="screen">
-              <Screen ref = {inputRef1} id = {"tdfffff"} data = {OutScreen} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
-              <PlayBar ref = {inputRef4} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
-              <div className="download" onClick={toggleOutScreenPlay}>
-                
-            <p>play</p>
-            
-      </div>
-      <div className="speed">
-               <div className="minus" onClick={FPSMinus}>
-                 <img src="minus.svg"></img>
-               </div>
-                  <p>{FPS} fps</p>
-               <div className="plus"  onClick={FPSPlus}>
-                   <img src="plus.svg"></img>
-                </div>
-      </div>
+              <Screen ref = {inputRef1} id = {"tdfffff"} data = {OutScreen} prepareFrames={prepareFrames} isPlay = {true} vp_percent = {52} delay = {delay} DefaultFrame = {frammmes[9]}/>
 
             </div>
         </div>
