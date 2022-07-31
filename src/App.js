@@ -29,7 +29,6 @@ let schemes_array = getSchemesArray()
   border: ${(props)=>props.border}px solid #000;
 `;
 
-
 const StyledBox= styled.div`
 height: 10px;
 width: 10px;
@@ -49,7 +48,6 @@ border: 1px solid #000;
 background:blue;
 opacity:${(props)=>props.isDragging?'0.80':'0'};
 z-index: 3;
-
 `
 
 function App() {

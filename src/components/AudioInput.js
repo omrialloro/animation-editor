@@ -1,6 +1,4 @@
 import React from "react";
-import useInterval from "./UseInterval";
-
 
 export default  React.forwardRef((props,ref) =>{
 
@@ -49,7 +47,6 @@ export default  React.forwardRef((props,ref) =>{
         onChange={handleFileChange}
         accept=".wav,.m4a,.mp3,.mp4"
         hidden={true}
-
       />
       {!source && <button  hidden={true}></button>}
       {source && (
