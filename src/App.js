@@ -13,6 +13,7 @@ import {grayRGB} from "./components/RGB";
 import AudioInput from "./components/AudioInput";
 import UseInterval from "./components/UseInterval";
 import PlayBar from "./components/PlayBar";
+import BrowseAnimations from "./components/BrowseAnimations"
 // import Waveform from "./components/Waveform";
 
 
@@ -130,11 +131,9 @@ function prepareFrames(data){
         }
         else{
           console.log(result.destination.index)
-
           const [reorderedItem] = items.splice(result.source.index, 1);
           items.splice(result.destination.index, 0, reorderedItem);
           setDATA(items);
-
         }
       }
 
@@ -154,7 +153,7 @@ function prepareFrames(data){
       setDATA(items);
     }
   const [ScreenRange,setScreenRange] = useState({"range":[0,1],"min":0,"max":1})
-  const [operatorsBtns,setOperatorsBtns] = useState({"rotate":0,"reverse":0,"reflect":0})
+  // const [operatorsBtns,setOperatorsBtns] = useState({"rotate":0,"reverse":0,"reflect":0})
 
 
   function setWindow(id){
@@ -163,11 +162,12 @@ function prepareFrames(data){
        setMainScreen(ttt)
   }
 
-
   let port = "http://localhost:4000"
 
   const [screenSize, setScreenSize] = useState(51)
   const [filenames,setFilenames] = useState([]);
+
+  
 
   useEffect(()=>{
     async function  loadFilenames(){
@@ -213,19 +213,19 @@ function prepareFrames(data){
 
   const [data,setData] = useState(mkData(3))
   const [mainScreen, setMainScreen_] = useState(data[0])
-  const [range, setRange] = useState([0,1])
+  // const [range, setRange] = useState([0,1])
 
 
   function setMainScreen(x){
       const items = Array.from(DATA);
-      let tt = items.map((el)=>(el["id"]!=x["id"]?el:x))
+      // let tt = items.map((el)=>(el["id"]!=x["id"]?el:x))
       setDATA(items.map((el)=>(el["id"]!=x["id"]?el:x)))
       let frames = animations[x["filename"]]
 
     setMainScreen_(x)
     setScreenRange({"min":0,"max":frames.length,"range":x["range"]})
-    setRange(x["range"])
-    setOperatorsBtns(x["operators"])
+    // setRange(x["range"])
+    // setOperatorsBtns(x["operators"])
   }
   
   const [FPS,SetFPS] = useState(Math.round(24))
@@ -341,8 +341,7 @@ function prepareFrames(data){
     setDuration(Number(e.target.value))
   }
 
-  async function handleSelectChange(event) {
-    let filename = event.target.value
+  async function handlePickAnimation(filename) {
     if (!animations.hasOwnProperty(filename)){
       let  a = await fetch(port + `/api/${filename}`, {method: 'GET' }).then(res => res.json())
       addAnimation(a["data"], filename)
@@ -357,9 +356,10 @@ function prepareFrames(data){
       // "frames":animations[filename].map((x)=>(rotateFrame(x))),
       "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}
     })
-
   },10)
   }
+
+  const [frameImg, setFrameImg] = useState();
 
   useEffect(()=>{
     prepareOutScreenData()
@@ -370,6 +370,7 @@ let frammmes = prepareFrames(mainScreen)
 console.log(frammmes.length)
 
 let i = 0;
+const [FrameIndex, setFrameIndex] = useState(0)
 
 const [isRunning, setIsRunning] = useState(false)
 UseInterval(() => {
@@ -386,12 +387,20 @@ function toggleMonitorPlay(){
 
 const [isRunningOutScreen, setIsRunningOutScreen] = useState(false)
 
-const [FrameIndex, setFrameIndex] = useState(0)
 const [MaxFrameIndex, setMaxFrameIndex] = useState(10)
 let ii = FrameIndex;
 
+console.log(document.getElementById("frames_counter"))
 UseInterval(() => {
   ii+=1;
+  document.querySelector(".frames_counter").innerHTML = ii;
+  if(isTime){
+    document.querySelector(".frames_counter").innerHTML= ii+"/"+MaxFrameIndex;
+  }
+  else{
+    document.querySelector(".frames_counter").innerHTML = (ii/FPS).toFixed(2)+"/"+(MaxFrameIndex/FPS).toFixed(2);
+  }
+
   if (ii>=OutScreen["frames"].length-1){
     ii=0
   }
@@ -400,11 +409,21 @@ UseInterval(() => {
 
 }, isRunningOutScreen?delay:null);
 
+const [isPlay, SetIsPlay] = useState(false)
+
 function toggleOutScreenPlay(){
   setIsRunningOutScreen(!isRunningOutScreen)
   handlePlay()
+  SetIsPlay(!isPlay)
 }
+const [isTime,setIsTime] = useState(true)
 
+function changeToTime(){
+  setIsTime(true)
+}
+function changeToFrames(){
+  setIsTime(false)
+}
 
 
 
@@ -448,8 +467,11 @@ return (
         {/* {provided.placeholder} */}
         </div>
         <div className="slide_monitor">
-        <SliderComp min={ScreenRange["min"]} max = {ScreenRange["max"]} range = {range} updateRange  = {updateRange} width = {340}/>
+        <SliderComp min={ScreenRange["min"]} max = {ScreenRange["max"]} range = {ScreenRange["range"]} updateRange  = {updateRange} width = {340}/>
         </div>
+        <div className="btn">         
+             <img src={!isPlay?"play_icon.svg":"pause_icon.svg"} onClick={toggleMonitorPlay}></img>
+          </div>
         </div>
         <div className="container_btns">    
     <div className="container_btn invert" onClick={clickReverse}>
@@ -484,25 +506,23 @@ return (
 
  <AudioInput ref = {AudioRef} start_sec={offset} stop_sec={offset+len_sec}></AudioInput>
 
-      <div className="add_music" onClick={handleChoose}>
+      {/* <div className="add_music" onClick={handleChoose}>
             <p>add music</p>
-      </div>
-      <div className="download" onClick={()=>console.log(setRange)}>
-            <p>download</p>
-      </div>
-      <div className="download" onClick={toggleMonitorPlay}>
-            <p>play</p>
-      </div>
-      <input value={offset} onChange={handleOffsetChange} />
-      <input value={duration} onChange={handleDurationChange} />
+      </div> */}
+
+      {/* <input value={offset} onChange={handleOffsetChange} />
+      <input value={duration} onChange={handleDurationChange} /> */}
       <div className="library" >
-        <form action="/action_page.php">
+        {/* <form action="/action_page.php">
               <select name="schemes" id="scheme"  onChange={handleSelectChange}>
                 {filenames.map((f)=>(<option>{f}</option>))}
               </select>
-        </form>
+        </form> */}
+        <BrowseAnimations PickAnimation = {handlePickAnimation}/>
       </div>
+
   </div>
+
 
   <div className="container_right" >
         <div>
@@ -525,27 +545,36 @@ return (
 
               </div>
               </ScrollMenu>
-
               <div className="screen">
               <Screen ref = {OutScreenRef} id = {"tdfffff"} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
               <PlayBar ref = {PlayBarRef} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
-              <div className="download" onClick={toggleOutScreenPlay}>
-                
+              {/* <div className="download" onClick={toggleOutScreenPlay}> 
             <p>play</p>
-            
-      </div>
-      <div className="speed">
-               <div className="minus" onClick={FPSMinus}>
-                 <img src="minus.svg"></img>
-               </div>
-                  <p>{FPS} fps</p>
-               <div className="plus"  onClick={FPSPlus}>
-                   <img src="plus.svg"></img>
-                </div>
-      </div>
+     </div> */}
+     <div className="container_play">
+       <div className="vvv">
+          <div className="btn">         
+             <img src={!isPlay?"play_icon.svg":"pause_icon.svg"} onClick={toggleOutScreenPlay}></img>
+          </div>
+          <div className="frames_counter">{isTime?ii+"/"+MaxFrameIndex:(ii/FPS).toFixed(2)+"/"+(MaxFrameIndex/FPS).toFixed(2)}</div>
+          <div className="toggle_frame_time" onClick={changeToTime} style={isTime?{backgroundColor:"#0066cc"}:{backgroundColor:"#0080ff"}}>F</div>
+          <div className="toggle_frame_time" onClick={changeToFrames} style={isTime?{backgroundColor:"#0080ff"}:{backgroundColor:"#0066cc"}}>T</div>
 
+
+
+       </div>
+          <div className="speed">
+                <div className="minus" onClick={FPSMinus}>
+                  <img src="minus.svg"></img>    
+                </div>
+                  <p>{FPS} FPS</p>
+                <div className="plus"  onClick={FPSPlus}>
+                    <img src="plus.svg"></img>
+                </div>
             </div>
+          </div>
         </div>
+      </div>
   </div>
 </main>
 

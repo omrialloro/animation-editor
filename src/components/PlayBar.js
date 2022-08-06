@@ -103,10 +103,11 @@ const PlayBar = forwardRef((props, ref) => {
         color: 'green',
         WebkitAppearance: 'slider-vertical',
         '& .MuiSlider-thumb': {
-          width: "8px",
+          width: "20px",
           height: '24px',
-          borderRadius: '0%',
+          borderRadius: '30%',
           background: '#F72C2C',
+          text:"fff",
         },
       }}
       />

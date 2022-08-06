@@ -70,14 +70,14 @@ const SliderComp = (props) => {
            onChangeCommitted = {onChangeCommitted}
            sx={{
             width: props.width,
-            height: "8px",
-            color: 'yellow',
+            height: "18px",
+            color: '#cca300',
             WebkitAppearance: 'slider-vertical',
 
             '& .MuiSlider-thumb': {
-              width: "34px",
-              height: '34px',
-              borderRadius: '0%',
+              width: "24px",
+              height: '24px',
+              borderRadius: '20%',
               background: '#F72C2C',
             },
           }}
