@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect,useRef } from "react";
 import "./components/App.css";
-import { ScrollMenu } from 'react-horizontal-scrolling-menu';
+import { ScrollMenu,VisibilityContext } from 'react-horizontal-scrolling-menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Screen from "./components/Screen";
 import SliderComp from "./components/SliderComp";
@@ -14,11 +14,13 @@ import AudioInput from "./components/AudioInput";
 import UseInterval from "./components/UseInterval";
 import PlayBar from "./components/PlayBar";
 import BrowseAnimations from "./components/BrowseAnimations"
+import {saveSession,loadSession} from "./components/SaveUtils";
 // import Waveform from "./components/Waveform";
 
 
-
 import  {reflectFrame,rotateFrame} from "./components/frameTransformations";
+
+
 
 
 let schemes_array = getSchemesArray()
@@ -61,22 +63,18 @@ function resetSelect(){
 
 const ref1 = useRef();
 const ref2 = useRef();
-const AudioRef = React.useRef({ref1,ref2});
+const ref3 = useRef();
+
+const AudioRef = React.useRef({ref1,ref2,ref3});
 const OutScreenRef = React.useRef();
 const MonitorRef = React.useRef();
 const SmallScreenRef = React.useRef();
 const PlayBarRef = React.useRef();
 
-const handleChoose = (event) => {
-  const { ref1, ref2 } = AudioRef.current;
-  ref1.current.click();
-};
-
 const handlePlay = (event) => {
   const { ref1, ref2 } = AudioRef.current;
   ref2.current.click();
 };
-
 
 function prepareFrames(data){
   let raw_frames = nestedCopy(animations[data["filename"]])
@@ -99,7 +97,6 @@ function prepareFrames(data){
   if(operators["scheme"]>0){
     let scheme = schemes_array[operators["scheme"]-1]
     raw_frames = changeFrameScheme(raw_frames, scheme)
-
   }
 
   let r = data["range"]
@@ -126,8 +123,6 @@ function prepareFrames(data){
             items.splice(result.destination.index+1, 0, info);
             setDATA(items);
           }
-
-
         }
         else{
           console.log(result.destination.index)
@@ -153,29 +148,37 @@ function prepareFrames(data){
       setDATA(items);
     }
   const [ScreenRange,setScreenRange] = useState({"range":[0,1],"min":0,"max":1})
-  // const [operatorsBtns,setOperatorsBtns] = useState({"rotate":0,"reverse":0,"reflect":0})
-
 
   function setWindow(id){
        let ttt = DATA.find(x=>x["id"]==id)
-       setSelectedId(id)
+      //  setSelectedId(id)
        setMainScreen(ttt)
+       setWindowsBorder(id)
   }
 
   let port = "http://localhost:4000"
 
-  const [screenSize, setScreenSize] = useState(51)
-  const [filenames,setFilenames] = useState([]);
-
   
-
-  useEffect(()=>{
-    async function  loadFilenames(){
-      let dd = await fetch(port + `/filenames`, {method: 'GET' }).then(res => res.json())
-      setFilenames(dd)
-    }
-    loadFilenames()
-  },[])
+  function extractToGif(frames, time_ms){
+    console.log("Ffff");
+    const prefix = window.prompt("enter gif name")
+    let name = prefix+String(Date.now())
+    let data = {"name":name,"speed":Math.round(time_ms),"data": frames}
+    let port_ = "http://localhost:2000"
+  
+    fetch(port_ + '/gif', {
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+  
+    let aaa =  document.createElement(`a`);
+    aaa.href = port_+`/download/${name}`
+    console.log(aaa.href)
+    aaa.click()
+  }
 
   function CreateGrayFramesData(r,c,num_frames,id){
 
@@ -213,19 +216,13 @@ function prepareFrames(data){
 
   const [data,setData] = useState(mkData(3))
   const [mainScreen, setMainScreen_] = useState(data[0])
-  // const [range, setRange] = useState([0,1])
-
 
   function setMainScreen(x){
       const items = Array.from(DATA);
-      // let tt = items.map((el)=>(el["id"]!=x["id"]?el:x))
       setDATA(items.map((el)=>(el["id"]!=x["id"]?el:x)))
       let frames = animations[x["filename"]]
-
-    setMainScreen_(x)
-    setScreenRange({"min":0,"max":frames.length,"range":x["range"]})
-    // setRange(x["range"])
-    // setOperatorsBtns(x["operators"])
+      setMainScreen_(x)
+      setScreenRange({"min":0,"max":frames.length,"range":x["range"]})
   }
   
   const [FPS,SetFPS] = useState(Math.round(24))
@@ -248,22 +245,24 @@ function prepareFrames(data){
   }
 
   const [OutScreen, setOutScreen] = useState(mainScreen)
-  const [len_sec,setLen_sec] = useState(50*(delay/1000))
-
 
   const [DATA, setDATA]=useState([
     {"id":"0","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}},
     {"id": "7","dim":mainScreen["dim"],"filename":mainScreen["filename"],"range":mainScreen["range"],"operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}}]);
 
   const [selectedId, setSelectedId] = useState(null)
+  const [timeCodes, SetTimeCodes] = useState([0])
 
   function prepareOutScreenData(data){
     let outFrames = []
+    let timeCodes_ = []
+    let start_frame = 0;
     DATA.forEach(element => {
+      timeCodes_.push(start_frame)
+      start_frame +=element["range"][1]
       outFrames = outFrames.concat(prepareFrames(element))
-
     });
-    setLen_sec(outFrames.length*(delay/1000))
+    SetTimeCodes(timeCodes_)
     setOutScreen({"id":mainScreen["id"],
     "frames":outFrames,
     "dim":mainScreen["dim"],
@@ -276,23 +275,12 @@ function prepareFrames(data){
     setMaxFrameIndex(outFrames.length)
   }
 
-  const [name, setName] = useState("monitor")
-
   function addAnimation(animation,id){
     if(!animation.hasOwnProperty(id)){
       let animations_ = animations
       animations_[id] = animation
       setAnimations(animations_)
     }
-    else {
-      console("haspropartty")
-    }
-  }
-
-  function deleteAnimation(animation,id){
-    let animations_ = animations
-    delete animations_.id
-    setAnimations(animations_)
   }
 
   function clickRotate(){
@@ -327,19 +315,26 @@ function prepareFrames(data){
     mainScreen_["operators"]["scheme"] = (mainScreen_["operators"]["scheme"]+1)%5
     console.log(mainScreen_["operators"]["scheme"])
     setMainScreen(mainScreen_)
-
   }
 
-  const [offset, setOffset] = useState(0.0)
-  const [duration, setDuration] = useState(2)
+  async function PrepareSession(){
+    let d = await loadSession("http://localhost:2000")
+    console.log(d["data"])
+    for (const el of d["data"]){
+      let filename = el["filename"]
+      // console.log(el["filename"])
+      if (!animations.hasOwnProperty(filename)){
+        let  a = await fetch(port + `/api/${filename}`, {method: 'GET' }).then(res => res.json())
+        addAnimation(a["data"], filename)
+      }
+      console.log(animations)
+      
 
-  function handleOffsetChange(e){
-    setOffset(Number(e.target.value))
+    }
+    
+    setDATA(d["data"])
   }
 
-  function handleDurationChange(e){
-    setDuration(Number(e.target.value))
-  }
 
   async function handlePickAnimation(filename) {
     if (!animations.hasOwnProperty(filename)){
@@ -356,23 +351,21 @@ function prepareFrames(data){
       // "frames":animations[filename].map((x)=>(rotateFrame(x))),
       "operators":{"rotate":0,"reflect":0,"reverse":0,"scheme":0}
     })
-  },10)
+  },1)
   }
-
-  const [frameImg, setFrameImg] = useState();
 
   useEffect(()=>{
     prepareOutScreenData()
-    console.log(OutScreen)
 
   },[mainScreen,DATA])
+
 let frammmes = prepareFrames(mainScreen)
-console.log(frammmes.length)
 
 let i = 0;
 const [FrameIndex, setFrameIndex] = useState(0)
 
 const [isRunning, setIsRunning] = useState(false)
+
 UseInterval(() => {
   i+=1;
   if (i>=frammmes.length-1){
@@ -385,13 +378,37 @@ function toggleMonitorPlay(){
   setIsRunning(!isRunning)
 }
 
+function setWindowsBorder(id){
+  DATA.forEach(element => {
+    let window = document.getElementById("win"+element["id"])
+    if(element["id"]==id&&window!=null){
+      window.style.border = '10px solid #000'
+    } 
+    else if (window!=null){
+      window.style.border = '2px solid #000'
+    }
+  })
+}
+
 const [isRunningOutScreen, setIsRunningOutScreen] = useState(false)
 
 const [MaxFrameIndex, setMaxFrameIndex] = useState(10)
 let ii = FrameIndex;
 
-console.log(document.getElementById("frames_counter"))
+let timecode_index = [...timeCodes,MaxFrameIndex].findIndex((el)=>el>FrameIndex)
+useEffect(() => {
+  if(DATA.length>1){
+    setWindowsBorder(DATA[Math.max(0,timecode_index-1)]["id"])
+  }
+
+}, [FrameIndex])
+
+
 UseInterval(() => {
+  if(ii==timeCodes[timecode_index]){
+    setWindowsBorder(DATA[timecode_index]["id"])
+    timecode_index =(timecode_index+1)%timeCodes.length
+  }
   ii+=1;
   document.querySelector(".frames_counter").innerHTML = ii;
   if(isTime){
@@ -403,6 +420,7 @@ UseInterval(() => {
 
   if (ii>=OutScreen["frames"].length-1){
     ii=0
+    ref3.current.click()
   }
   OutScreenRef.current(OutScreen["frames"][ii])
   PlayBarRef.current(ii)
@@ -424,8 +442,6 @@ function changeToTime(){
 function changeToFrames(){
   setIsTime(false)
 }
-
-
 
 function updateFrameIndex(index){
   setFrameIndex(index)
@@ -462,7 +478,7 @@ return (
 
                             </StyledBox>
                                 <Screen ref = {MonitorRef}
-                              id = "tt"  vp_percent = {31}  DefaultFrame ={frammmes[0]}/>
+                              id = "tt"  vp_percent = {32.5}  DefaultFrame ={frammmes[0]}/>
 
         {/* {provided.placeholder} */}
         </div>
@@ -504,26 +520,10 @@ return (
  </div>
  </div>
 
- <AudioInput ref = {AudioRef} start_sec={offset} stop_sec={offset+len_sec}></AudioInput>
-
-      {/* <div className="add_music" onClick={handleChoose}>
-            <p>add music</p>
-      </div> */}
-
-      {/* <input value={offset} onChange={handleOffsetChange} />
-      <input value={duration} onChange={handleDurationChange} /> */}
       <div className="library" >
-        {/* <form action="/action_page.php">
-              <select name="schemes" id="scheme"  onChange={handleSelectChange}>
-                {filenames.map((f)=>(<option>{f}</option>))}
-              </select>
-        </form> */}
         <BrowseAnimations PickAnimation = {handlePickAnimation}/>
       </div>
-
   </div>
-
-
   <div className="container_right" >
         <div>
                 <ScrollMenu>
@@ -531,7 +531,7 @@ return (
                     {DATA.map((k,index)=>( <Draggable key={k["id"]+1000} draggableId={k["id"]} index={index}>
                     {(provided)=>(
                             <div className="position2" {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
-                            <StyledWindow border={k["id"]==selectedId?10:2} onClick={()=>{setWindow(k["id"])}}>
+                            <StyledWindow id = {"win"+k["id"]} border={k["id"]==selectedId?10:2} onClick={()=>{setWindow(k["id"])}}>
                              <Screen ref = {SmallScreenRef}  id = {"tt"+k["id"]}  vp_percent = {9} DefaultFrame = {prepareFrames(k)[0]}/>
                             </StyledWindow>
                             <p onClick={()=>{deletAnimation(k["id"])}}>xx</p>
@@ -548,9 +548,6 @@ return (
               <div className="screen">
               <Screen ref = {OutScreenRef} id = {"tdfffff"} vp_percent = {52} delay = {delay} DefaultFrame = {outScreenFrame}/>
               <PlayBar ref = {PlayBarRef} min ={0} max={MaxFrameIndex} width = {560} UpdateFrameIndex = {updateFrameIndex}></PlayBar>
-              {/* <div className="download" onClick={toggleOutScreenPlay}> 
-            <p>play</p>
-     </div> */}
      <div className="container_play">
        <div className="vvv">
           <div className="btn">         
@@ -559,9 +556,6 @@ return (
           <div className="frames_counter">{isTime?ii+"/"+MaxFrameIndex:(ii/FPS).toFixed(2)+"/"+(MaxFrameIndex/FPS).toFixed(2)}</div>
           <div className="toggle_frame_time" onClick={changeToTime} style={isTime?{backgroundColor:"#0066cc"}:{backgroundColor:"#0080ff"}}>F</div>
           <div className="toggle_frame_time" onClick={changeToFrames} style={isTime?{backgroundColor:"#0080ff"}:{backgroundColor:"#0066cc"}}>T</div>
-
-
-
        </div>
           <div className="speed">
                 <div className="minus" onClick={FPSMinus}>
@@ -575,15 +569,26 @@ return (
           </div>
         </div>
       </div>
+      <AudioInput ref = {AudioRef} durationSec = {(MaxFrameIndex/FPS).toFixed(2)}></AudioInput>
+      <div className="save_container">
+        <div className="gif_btn" onClick={()=>extractToGif(OutScreen["frames"], 30)}>
+            <p> MAKE GIF!</p>
+        </div>
+        <div className="session_btn" onClick={()=>saveSession("test", DATA, "http://localhost:2000")}>
+        {/* <div className="session_btn" onClick={()=>console.log(DATA)}> */}
+            <p>SAVE SESSION</p>
+        </div>
+        <div className="load_btn" onClick={()=>PrepareSession()}>
+            <p>LOAD SESSION</p>
+        </div>
+      </div>
+
   </div>
 </main>
 
 )}}
 </Droppable>
-
 </DragDropContext>
-
-
 </body>
   );
 }

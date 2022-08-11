@@ -87,7 +87,7 @@ export default function BrowseAnimations(props) {
       
     return (
         <>
-        <div class="browse_audio">
+        <div className="browse_audio">
               <img src="arrow_browse.svg" onClick={()=>{setIsShow(!isShow)}}></img>
               <p>browse library</p>
           </div>

@@ -128,15 +128,74 @@
     text-align: center;
   }
 
-  .add_music {
-    height: 48px;
-    width: 140px;
-    line-height: 48px;
+  .music_section {
+    line-height: 28px;
     text-align: center;
-    background-color: red;
-    border: 2px solid #000;
-    margin: 24px auto;
+    margin: 65px auto;
+    /* position: absolute; */
+    display: flex;
+    background-color: rgb(60,170,220);
   }
+  
+
+  .add_music {
+    height: 55px;
+    width: 100px;
+    line-height: 28px;
+    text-align: center;
+    background-color: rgb(240,70,80);
+    border: 2px solid #000;
+    margin: 2px 5px;
+    font-weight: 800;
+
+    /* position: absolute; */
+    /* display:flex; */
+
+  }
+
+  .save_container {
+    display: flex;
+  }
+
+  .session_btn {
+    height: 35px;
+    width: 100px;
+    line-height: 1px;
+    text-align: center;
+    background-color: magenta;
+    border: 2px solid red;
+    margin: 2px 5px;
+    font-weight: 600;
+  }
+
+  .load_btn {
+    height: 35px;
+    width: 100px;
+    line-height: 1px;
+    text-align: center;
+    background-color:pink;
+    border: 2px solid red;
+    margin: 2px 5px;
+    font-weight: 600;
+  }
+
+  .gif_btn {
+    height: 35px;
+    width: 100px;
+    line-height: 1px;
+    text-align: center;
+    background-color: yellow;
+    border: 2px solid red;
+    margin: 2px 5px;
+    font-weight: 600;
+  }
+  .music_title {
+    text-align: center;
+    font-size: 18px;
+    width: 250px;
+  }
+
+
 
   .download{
     height: 48px;

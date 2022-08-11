@@ -26,8 +26,6 @@ function getAllColors(frames){
   function prepareSchemeMapping(s1,s2){
     let schemeMap = {}
     for(let i =0;i<s1.length;i++){
-      console.log(s1)
-      console.log(s2)
       schemeMap[s1[i]]=s2[i]
     }
     return schemeMap
