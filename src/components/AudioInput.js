@@ -33,9 +33,12 @@ React.useEffect(() => {
 }, [source])
 
   const { ref1, ref2,ref3 } = ref.current;
+  const reff = React.useRef()
 
   function handleChoose(){
-    ref1.current.click();
+    console.log("DFFFFFF")
+    reff.current.click();
+    console.log(reff.current)
   }
 
   const offsetRef = React.useRef()
@@ -86,12 +89,13 @@ React.useEffect(() => {
       </div>
       
       <input
-        ref={ref1}
+        ref={reff}
+        onClick = {()=>console.log("cllllleeeic")}
         className="AudioInput_input"
         type="file"
         onChange={handleFileChange}
         accept=".wav,.m4a,.mp3,.mp4"
-        hidden={true}
+        hidden={false}
       />
       {!source && <button  hidden={true}></button>}
       {source && (

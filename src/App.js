@@ -156,17 +156,15 @@ function prepareFrames(data){
        setWindowsBorder(id)
   }
 
-  let port = "http://localhost:4000"
+  // let port = "http://localhost:4000"
+  let port = "http://3.83.83.11:4000"
 
   
   function extractToGif(frames, time_ms){
-    console.log("Ffff");
     const prefix = window.prompt("enter gif name")
     let name = prefix+String(Date.now())
-    let data = {"name":name,"speed":Math.round(time_ms),"data": frames}
-    let port_ = "http://localhost:2000"
-  
-    fetch(port_ + '/gif', {
+    let data = {"name":name,"speed":Math.round(time_ms),"data": frames,"save_animation":false}
+    fetch(port + '/gif', {
       method: 'POST', // or 'PUT'
       headers: {
         'Content-Type': 'application/json',
@@ -175,9 +173,15 @@ function prepareFrames(data){
     })
   
     let aaa =  document.createElement(`a`);
-    aaa.href = port_+`/download/${name}`
+    aaa.href = port+`/download/${name}`
     console.log(aaa.href)
     aaa.click()
+  }
+  
+  function handleSave() {
+    const session_name = window.prompt("enter session name");
+    saveSession(session_name, DATA, port)
+    
   }
 
   function CreateGrayFramesData(r,c,num_frames,id){
@@ -318,7 +322,7 @@ function prepareFrames(data){
   }
 
   async function PrepareSession(){
-    let d = await loadSession("http://localhost:2000")
+    let d = await loadSession(port)
     console.log(d["data"])
     for (const el of d["data"]){
       let filename = el["filename"]
@@ -328,8 +332,6 @@ function prepareFrames(data){
         addAnimation(a["data"], filename)
       }
       console.log(animations)
-      
-
     }
     
     setDATA(d["data"])
@@ -574,7 +576,7 @@ return (
         <div className="gif_btn" onClick={()=>extractToGif(OutScreen["frames"], 30)}>
             <p> MAKE GIF!</p>
         </div>
-        <div className="session_btn" onClick={()=>saveSession("test", DATA, "http://localhost:2000")}>
+        <div className="session_btn" onClick={handleSave}>
         {/* <div className="session_btn" onClick={()=>console.log(DATA)}> */}
             <p>SAVE SESSION</p>
         </div>

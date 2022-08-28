@@ -1,10 +1,8 @@
 import React, { useState, useEffect,useRef } from "react";
 import styled from "styled-components";
 
-
-let port = "http://localhost:4000"
-
-
+// let port = "http://localhost:4000"
+let port = "http://3.83.83.11:4000"
 
 const StyledFrames= styled.div`
 width: 50px;
@@ -12,22 +10,17 @@ height: 50px;
 position: relative;
 overflow: hidden;
 align-items: center;
-
 `
-
-const XX= styled.img`
+const XX = styled.img`
 display: inline;
 height: 90%;
 width: auto;
 position:relative;
 border-radius: 50%;
 align-items: center;
-
-  top: 12%;
-  left: 12%;
-
+top: 12%;
+left: 12%;
 `
-
 const StyledBox= styled.div`
 
 height:240px;
@@ -41,7 +34,6 @@ background: rgb(110,88,32);
 visibility: hidden;
 border:3px solid salmon;
 `
-
 
 export default function BrowseAnimations(props) {
     const PickAnimation = props.PickAnimation
@@ -72,18 +64,14 @@ export default function BrowseAnimations(props) {
       },[])
       
       const [imgURLs,setImgURLs] = useState([]);
-
       const [isShow,setIsShow] = useState(false)
 
-
-      
       useEffect(()=>{
         async function fetchAllImage(filenames){
             setImgURLs(await Promise.all(filenames.map(async (x)=>(fetchImage(x)))))
          }
          fetchAllImage(filenames)
       },[filenames])
-  
       
     return (
         <>
@@ -102,7 +90,5 @@ export default function BrowseAnimations(props) {
 
         </StyledBox>
         </>
-
-
     );
   }

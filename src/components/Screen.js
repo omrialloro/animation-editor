@@ -28,8 +28,8 @@ const create_screen = (n,m, vp_percent, frame,id)=>{
 }
 
 const StyledScreen= styled.div`
-height: ${(props)=>props.vp_percent}%;
-width: ${(props)=>props.vp_percent}%;
+height: ${(props)=>props.vp_percent};
+width: ${(props)=>props.vp_percent};
 display: grid;
 grid-template-columns: repeat(${(props)=>props.col}, 1fr);
 grid-template-rows: repeat(${(props)=>props.row}, 1fr);
