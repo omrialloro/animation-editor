@@ -28,13 +28,18 @@ const create_screen = (n,m, vp_percent, frame,id)=>{
 }
 
 const StyledScreen= styled.div`
-height: ${(props)=>props.vp_percent};
-width: ${(props)=>props.vp_percent};
+height: ${(props)=>props.vp_percent}px;
+width: ${(props)=>props.vp_percent}px;
 display: grid;
 grid-template-columns: repeat(${(props)=>props.col}, 1fr);
 grid-template-rows: repeat(${(props)=>props.row}, 1fr);
-grid-column-gap: 0;
-grid-row-gap: 0;
+grid-column-gap: 0.001px;
+grid-row-gap: 0.001px;
+`;
+
+
+const bbb= styled.div`
+
 `;
 const calcPixelSize = (c, r, vp_percent)=>{return [(vp_percent)/c,(vp_percent)/r]}
 const Screen = forwardRef((props, ref) => {
@@ -53,12 +58,13 @@ const {vp_percent,id,DefaultFrame} = props
   const m=DefaultFrame[0].length
   ref.current =(frame)=> setFrame(frame,id);      
     return (
-      <div>
-
+      // <div>
+      <bbb>
     <StyledScreen col={m} row={n} vp_percent={vp_percent}>
         {create_screen(m,n,vp_percent, DefaultFrame, id)}
     </StyledScreen>
-</div>
+    </bbb>
+// </div>
 )
 })
 

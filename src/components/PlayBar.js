@@ -32,18 +32,18 @@ const StyledSlider = styled(SliderUnstyled)(
     display: block;
     position: absolute;
     width: 100%;
-    height: 20px;
-    border-radius: 2px;
-    background-color: currentColor;
-    opacity: 0.38;
+    height: 8px;
+    border-radius: unset;
+    background-color: #fdd8d8;
+    opacity: unset;
   }
 
   & .${sliderUnstyledClasses.track} {
     display: block;
     position: absolute;
-    height: 10px;
-    border-radius: 2px;
-    background-color: currentColor;
+    height: 8px;
+    // border-radius: 2px;
+    background-color: #f72b2c;
   }
 
   & .${sliderUnstyledClasses.thumb} {
@@ -51,12 +51,12 @@ const StyledSlider = styled(SliderUnstyled)(
     width: 14px;
     height: 14px;
     margin-left: -6px;
-    margin-top: -5px;
+    margin-top: -8px;
     box-sizing: border-box;
     border-radius: 50%;
     outline: 0;
-    border: 2px solid currentColor;
-    background-color: #fff;
+    // border: 2px solid currentColor;
+    background-color: #f72b2c;
 
     :hover,
     &.${sliderUnstyledClasses.focusVisible} {
@@ -100,12 +100,12 @@ const PlayBar = forwardRef((props, ref) => {
        sx={{
         width: props.width,
         height: "8px",
-        color: 'green',
+        color: '#fff',
         WebkitAppearance: 'slider-vertical',
         '& .MuiSlider-thumb': {
-          width: "20px",
+          width: "24px",
           height: '24px',
-          borderRadius: '30%',
+          borderRadius: '50%',
           background: '#F72C2C',
           text:"fff",
         },

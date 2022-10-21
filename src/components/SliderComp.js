@@ -58,7 +58,7 @@ const SliderComp = (props) => {
     }
   
     return (
-      <Box sx={{ width: 300 }}>
+      // <Box sx={{ width: 3000 }}>
         <div style={{width:props.width} }>
         <Slider
            getAriaLabel={() => "Route Difficulty"}
@@ -70,14 +70,17 @@ const SliderComp = (props) => {
            onChangeCommitted = {onChangeCommitted}
            sx={{
             width: props.width,
-            height: "18px",
-            color: '#cca300',
+            // height: "18px",
+            height: "8px",
+            color: '#fdd8d8',
             WebkitAppearance: 'slider-vertical',
 
             '& .MuiSlider-thumb': {
               width: "24px",
+              
               height: '24px',
-              borderRadius: '20%',
+              // borderRadius: '20%',
+              borderRadius: '50%',
               background: '#F72C2C',
             },
           }}
@@ -85,7 +88,7 @@ const SliderComp = (props) => {
            
         />
         </div>
-      </Box>
+      // </Box>
     );
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect,useRef } from "react";
 import styled from "styled-components";
 
 // let port = "http://localhost:4000"
-let port = "http://3.83.83.11:4000"
+const port = "http://3.83.83.11:4000"
 
 const StyledFrames= styled.div`
 width: 50px;
@@ -13,7 +13,7 @@ align-items: center;
 `
 const XX = styled.img`
 display: inline;
-height: 90%;
+height: 80%;
 width: auto;
 position:relative;
 border-radius: 50%;
@@ -23,16 +23,19 @@ left: 12%;
 `
 const StyledBox= styled.div`
 
-height:240px;
+height:330px;
 width:330px;
+border-radius: 12px;
+border: 1px solid #909090;
+padding: 12px;
 display: grid;
 grid-template-columns: repeat(5, 1fr);
 grid-template-rows: repeat(50, 1fr);
 grid-column-gap: 0;
 overflow: scroll ;
-background: rgb(110,88,32);
+background: #c1c1c1;
 visibility: hidden;
-border:3px solid salmon;
+// border:3px solid salmon;
 `
 
 export default function BrowseAnimations(props) {
@@ -75,11 +78,11 @@ export default function BrowseAnimations(props) {
       
     return (
         <>
-        <div className="browse_audio">
+        {/* <div className="browse_audio">
               <img src="arrow_browse.svg" onClick={()=>{setIsShow(!isShow)}}></img>
               <p>browse library</p>
-          </div>
-        <StyledBox style={isShow?{visibility:'visible',  transition: 'width 2s, height 4s'}:{visibility:'hidden'}}>
+          </div> */}
+        <StyledBox style={isShow?{visibility:'visible',  transition: 'width 2s, height 4s'}:{visibility:'visible'}}>
         <div className="order" ></div>
         {imgURLs.map((x,index)=>(
             <StyledFrames 
@@ -87,7 +90,7 @@ export default function BrowseAnimations(props) {
                 <XX src={x} id = {filenames[index]} onClick={()=>{fff(filenames[index])}}></XX>
             </StyledFrames>
         ))}
-
+        
         </StyledBox>
         </>
     );

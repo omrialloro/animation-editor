@@ -33,8 +33,8 @@ const StyledSlider = styled(SliderUnstyled)(
     position: absolute;
     width: 100%;
     height: 20px;
-    border-radius: 2px;
-    background-color: currentColor;
+    // border-radius: 2px;
+    // background-color: currentColor;
     opacity: 0.38;
   }
 
@@ -42,8 +42,8 @@ const StyledSlider = styled(SliderUnstyled)(
     display: block;
     position: absolute;
     height: 10px;
-    border-radius: 2px;
-    background-color: currentColor;
+    // border-radius: 2px;
+    // background-color: currentColor;
   }
 
   & .${sliderUnstyledClasses.thumb} {
@@ -51,7 +51,7 @@ const StyledSlider = styled(SliderUnstyled)(
     width: 14px;
     height: 14px;
     margin-left: -6px;
-    margin-top: -5px;
+    margin-top: -8px;
     box-sizing: border-box;
     border-radius: 50%;
     outline: 0;

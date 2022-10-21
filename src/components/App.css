@@ -1,3 +1,47 @@
+.header {
+  background-color: #fff;
+  width: 100%;
+  height: 24px;
+  position:fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.header ul {
+display: flex;
+width: 990px;
+margin: 0 auto;
+line-height: 24px;
+align-items: center;
+height: 100%;
+}
+
+.header li {
+margin-right: 24px;
+text-transform: uppercase;
+font-weight: 600;
+font-size: 12px;
+cursor: pointer;
+}
+
+
+.scheme {
+  margin: 0 auto;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  border-width: 5px;
+  border-style: solid;
+  border-color: red green blue yellow;
+  /* transform: rotate(45deg); */
+}
+
+.header li:hover {
+color: #f72c2c;
+  }
+
 .Container {
   background: rgb(255,255,255);
   height: 100vh;
@@ -31,13 +75,6 @@
 
   .Card:hover{
   transform: scale(.99);
-  }
-
-  body {
-    font-size: 16px;
-    font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
-    font-weight: 400;
-    background-color: #fafafa;
   }
 
   .sidebar {
@@ -113,7 +150,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-
+     margin-bottom: 12px;
   }
 
   .window {
@@ -158,9 +195,9 @@
   }
 
   .session_btn {
-    height: 35px;
-    width: 100px;
-    line-height: 1px;
+    height: 36px;
+    width: 128px;
+    line-height: 36px;
     text-align: center;
     background-color: magenta;
     border: 2px solid red;
@@ -169,9 +206,9 @@
   }
 
   .load_btn {
-    height: 35px;
-    width: 100px;
-    line-height: 1px;
+    height: 36px;
+    width: 128px;
+    line-height: 36px;
     text-align: center;
     background-color:pink;
     border: 2px solid red;
@@ -180,9 +217,9 @@
   }
 
   .gif_btn {
-    height: 35px;
-    width: 100px;
-    line-height: 1px;
+    height: 36px;
+    width: 128px;
+    line-height: 36px;
     text-align: center;
     background-color: yellow;
     border: 2px solid red;
@@ -190,11 +227,15 @@
     font-weight: 600;
   }
   .music_title {
+    height: 36px;
+    width: 96px;
+    line-height: 36px;
     text-align: center;
     font-size: 18px;
     width: 250px;
   }
 
+ 
 
 
   .download{
@@ -311,12 +352,13 @@
 
   @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-body {
-  font-size: 12px;
-  font-family: 'Roboto', sans-serif;
+body, .bodyInner  {
+  font-family: 'roboto';
   color: #333333;
   font-weight: 400;
-  background-color: #5d8a94;
+  background-color: #a0a0a0;
+  font-size: 16px;
+
 }
 
 header {
@@ -350,7 +392,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 560px;
+  width: 480px;
   padding-bottom: 0px;
 }
 
@@ -414,7 +456,7 @@ main {
   display:flex;
   justify-content: center;
   height: 972px;
-  margin-top: 24px;
+  margin-top: 36px;
 }
 
 .container_left {
@@ -422,20 +464,22 @@ main {
   height: 560px;
   border-right: 1px solid #999797;
   margin-right: 32px;
+  /* margin-top: 120px; */
 }
 
 .inner_container_left {
   display:flex;
+  
 }
 
 .container_right {
-  width: 560px;
+  width: 482px;
 }
 
 /* CSS for Screen  */
 
 .screen {
-  height: 560px;
+  height: 482px;
   border: 1px solid #606060;
 }
 
@@ -451,9 +495,6 @@ main {
 .monitor {
   height: 336px;
   width: 336px;
-
-  border: 3px solid #001a00
-  ;
   }
 .monitor img {
   width: 100%;
@@ -585,7 +626,7 @@ main {
   width: 56px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center;  
 }
 
 .btn {
@@ -594,14 +635,15 @@ main {
 /* background-color: #FEE7E7; */
 border-radius: 50%;
 text-align: center;
+cursor:pointer;
 /* line-height: 32px; */
-margin: 8px 0;
 }
 
 .container_btn {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 8px;
 }
 .container_btn p {
   font-size: 12px;
@@ -618,6 +660,7 @@ margin: 8px 0;
   height: 48px;
   display: flex;
   align-items: center;
+  padding: 12px;
 }
 
 
@@ -686,10 +729,18 @@ margin: 8px 0;
     margin-top: 8px;
     }
 
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .browse_audio {
   width: 160px;
   display: flex;
   justify-content: flex-start;
+  cursor: pointer;
+  /* margin-bottom: 24px; */
 }
 .browse_audio img {
   margin-right: 8px;
@@ -761,3 +812,27 @@ font-weight: 500;
 .audition_screen img {
   width: 100%;
 }
+
+
+.position2 {
+  display:flex;
+}
+
+.arrange_btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .duplicate {
+   width: 8px;
+    height: 8px; 
+    background-color: #fff;
+    padding: 1px;
+    border-radius: 50%;
+    line-height: 6px;
+  }
+
+  .position2 {
+    margin-right:2px;
+  }

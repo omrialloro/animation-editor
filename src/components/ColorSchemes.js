@@ -62,4 +62,4 @@ let schemes_array = [scheme1, scheme2,scheme3,scheme4]
 function getSchemesArray(){return [scheme1, scheme2,scheme3,scheme4]}
 
 
-export  {changeFrameScheme, getSchemesArray}
+export  {changeFrameScheme, getSchemesArray, detectScheme}
