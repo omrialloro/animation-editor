@@ -3,7 +3,7 @@ import { isSubset} from "./Utils";
 
 let scheme1 =  ['#171616', '#B51F1F','#cb4406','#F3F1E0', '#cb9d06','#065684']
 
-let scheme2  = ['#ff0000','#0000ff','#FFFFFF','#000000','#FFFF00','FF00FF']
+let scheme2  = ['#0000ff','#ff0000','#ffffff','#000000','#ffff00','#ff00ff']
 
 let scheme3  = ['#28b7ce', '#21c17c', '#e27940','#1f286d','#dd6cb8', '#f2e672']
 
@@ -34,18 +34,18 @@ function getAllColors(frames){
 function detectScheme(frames){
     let colors = getAllColors(frames)
     if(isSubset(colors, scheme1)){
-      return [1,scheme1]
+      return [0,scheme1]
     }
     if(isSubset(colors, scheme2)){
-      return [2,scheme2]
+      return [1,scheme2]
     }
     if(isSubset(colors, scheme3)){
-      return [3,scheme3]
+      return [2,scheme3]
     }
     if(isSubset(colors, scheme4)){
-      return [4,scheme4]
+      return [3,scheme4]
     }
-    return [0,{}]
+    return [-1,{}]
   }
 
   function changeFrameColors(frame,schemeMap){

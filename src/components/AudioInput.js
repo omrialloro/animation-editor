@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import useInterval from './UseInterval'
 
 import SlideBar from "./SlideBar.js"
 
@@ -33,13 +32,8 @@ React.useEffect(() => {
 }, [source])
 
   const { ref1, ref2,ref3 } = ref.current;
-  const reff = React.useRef()
 
-  function handleChoose(){
-    console.log("DFFFFFF")
-    reff.current.click();
-    console.log(reff.current)
-  }
+  // ref1.current = ()=>{console.log("ff")}
 
   const offsetRef = React.useRef()
 
@@ -80,22 +74,22 @@ React.useEffect(() => {
     <div className="AudioInput">
       
 <div className="music_section">
-          <div className="add_music" onClick={handleChoose}>
+          {/* <div className="add_music" onClick={handleChoose}>
           <p> UPLOAD MUSIC</p>
-          </div>
-          <div className="music_title">
+          </div> */}
+          {/* <div className="music_title">
             <p> {title}</p>
-          </div>
+          </div> */}
       </div>
       
       <input
-        ref={reff}
+        ref={ref1}
         onClick = {()=>console.log("cllllleeeic")}
         className="AudioInput_input"
         type="file"
         onChange={handleFileChange}
         accept=".wav,.m4a,.mp3,.mp4"
-        hidden={false}
+        hidden={true}
       />
       {!source && <button  hidden={true}></button>}
       {source && (
